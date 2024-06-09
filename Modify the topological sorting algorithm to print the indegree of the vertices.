@@ -1,0 +1,50 @@
+from collections import deque, defaultdict
+
+def topological_sort_with_indegree(graph):
+    # Compute indegree of each vertex
+    indegree = defaultdict(int)
+    for u in graph:
+        indegree[u] = 0
+
+    for u in graph:
+        for v in graph[u]:
+            indegree[v] += 1
+
+    # Print the indegree of each vertex
+    print("Indegree of vertices:")
+    for vertex in indegree:
+        print(f"Vertex {vertex}: {indegree[vertex]}")
+
+    # Initialize queue with all vertices of indegree 0
+    queue = deque([u for u in indegree if indegree[u] == 0])
+    
+    topological_order = []
+
+    while queue:
+        u = queue.popleft()
+        topological_order.append(u)
+        
+        for v in graph[u]:
+            indegree[v] -= 1
+            if indegree[v] == 0:
+                queue.append(v)
+
+    # If topological sort is possible (i.e., graph has no cycles)
+    if len(topological_order) == len(graph):
+        print("Topological Sort:")
+        print(" -> ".join(topological_order))
+    else:
+        print("The graph has a cycle, and topological sorting is not possible.")
+
+# Example usage:
+graph = {
+    'A': ['C', 'D'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': ['F', 'G'],
+    'E': ['G'],
+    'F': [],
+    'G': []
+}
+
+topological_sort_with_indegree(graph)
